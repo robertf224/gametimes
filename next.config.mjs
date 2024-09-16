@@ -14,6 +14,10 @@ const nextConfig = {
         protocol: "http",
         hostname: "*.espncdn.com",
       },
+      {
+        protocol: "https",
+        hostname: "*.googleusercontent.com",
+      },
     ],
   },
   experimental: {

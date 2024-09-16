@@ -3,43 +3,57 @@ import {
   CollegeFootballConference,
   CollegeFootballGame,
   CollegeFootballTeam,
+  GametimesFavorite,
 } from "@gametimes/sdk";
 import Image from "next/image";
 import { Table } from "../table";
 import { Osdk } from "@osdk/client";
-
+import { FavoriteButton } from "../favorite-button";
+import { auth } from "@/logic/auth";
+import { generateFavoriteId } from "@/logic/generateFavoriteId";
+import { TeamLogo } from "../team-logo";
 export interface TeamViewProps {
   team: Osdk<CollegeFootballTeam>;
 }
 
 export const TeamView: React.FC<TeamViewProps> = async ({ team }) => {
-  const [{ name: conferenceName }, { data: games }] = await Promise.all([
-    foundryClient(CollegeFootballConference).fetchOne(team.conferenceId!, {
-      $select: ["name"],
-    }),
-    foundryClient(CollegeFootballGame)
-      .where({
-        season: 2024,
-        $or: [{ homeTeamId: team.id }, { awayTeamId: team.id }],
-      })
-      .fetchPage({ $orderBy: { scheduledTime: "asc" }, $pageSize: 50 }),
-  ]);
+  const session = await auth();
+  const user = session?.user && session.user.id ? session.user : undefined;
+  const [{ name: conferenceName }, { data: games }, favoritedResponse] =
+    await Promise.all([
+      foundryClient(CollegeFootballConference).fetchOne(team.conferenceId!, {
+        $select: ["name"],
+      }),
+      foundryClient(CollegeFootballGame)
+        .where({
+          season: 2024,
+          $or: [{ homeTeamId: team.id }, { awayTeamId: team.id }],
+        })
+        .fetchPage({ $orderBy: { scheduledTime: "asc" }, $pageSize: 50 }),
+      user
+        ? foundryClient(GametimesFavorite).fetchOneWithErrors(
+            generateFavoriteId(user.id!, team.id)
+          )
+        : undefined,
+    ]);
+  const favorited = favoritedResponse?.value;
 
   return (
     <div className="flex flex-col gap-8">
       <div className="flex items-center gap-4 flex-none">
-        {team.logo && (
-          <Image
-            src={team.logo}
-            alt={`${team.college} logo`}
-            width={50}
-            height={50}
-          />
-        )}
+        <TeamLogo team={team} size={50} />
         <div>
-          <h1 className="text-lg">
-            {team.college} {team.name}
-          </h1>
+          <div className="flex items-center gap-2">
+            <h1 className="text-lg">
+              {team.college} {team.name}
+            </h1>
+            {user && (
+              <FavoriteButton
+                teamId={team.id}
+                favorited={favorited !== undefined}
+              />
+            )}
+          </div>
           <h6 className="text-muted">{conferenceName}</h6>
         </div>
       </div>

@@ -1,13 +1,17 @@
 "use server";
 
 import { foundryClient } from "@/logic/foundryClient";
-import { CollegeFootballTeam } from "@gametimes/sdk";
+import { CollegeFootballDivision, CollegeFootballTeam } from "@gametimes/sdk";
 import { Osdk } from "@osdk/client";
 
 export default async function search(
   query: string
 ): Promise<Array<Osdk<CollegeFootballTeam>>> {
-  const results = await foundryClient(CollegeFootballTeam)
+  const fbsTeamsObjectSet = foundryClient(CollegeFootballDivision)
+    .where({ alias: "FBS" })
+    .pivotTo("collegeFootballConferences")
+    .pivotTo("collegeFootballTeams");
+  const results = await fbsTeamsObjectSet
     .where({
       $or: [
         {

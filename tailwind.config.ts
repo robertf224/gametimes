@@ -8,6 +8,8 @@ const config: Config = {
         background: "var(--background)",
         foreground: "var(--foreground)",
         muted: "var(--muted)",
+        hover: "var(--hover)",
+        active: "var(--active)",
       },
     },
   },
