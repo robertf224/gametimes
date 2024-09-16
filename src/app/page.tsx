@@ -1,8 +1,4 @@
-import {
-  CollegeFootballDivision,
-  CollegeFootballGame,
-  GametimesFavorite,
-} from "@gametimes/sdk";
+import { CollegeFootballDivision, GametimesFavorite } from "@gametimes/sdk";
 import { foundryClient } from "@/logic/foundryClient";
 import { Temporal } from "@js-temporal/polyfill";
 import { Table } from "@/components/table";

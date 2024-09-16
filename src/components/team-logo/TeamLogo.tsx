@@ -15,7 +15,8 @@ export const TeamLogo: React.FC<TeamLogoProps> = ({ team, size }) => {
     width: size,
     height: size,
   };
-  const lightClassName = "fill-foreground";
+  // Don't need this because we are adding an alt
+  /* eslint-disable jsx-a11y/alt-text */
   return (
     <>
       {team.logo ? (
