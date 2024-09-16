@@ -3,7 +3,13 @@ compatibility_date = "2024-07-29"
 compatibility_flags = ["nodejs_compat"]
 pages_build_output_dir = ".vercel/output/static"
 
-[vars]
+[env.production.vars]
+FOUNDRY_CLIENT_ID = "a389012581ce16da4bc34d1445fb6d90"
+FOUNDRY_URL = "https://bobbyfidz.usw-16.palantirfoundry.com/"
+FOUNDRY_ONTOLOGY_RID= "ri.ontology.main.ontology.e0f20a9f-fb10-4b1f-a8e8-a6a409c78309"
+AUTH_GOOGLE_ID = "301455872464-s69dvqk9e7iv6u6ug49oshtflf9oevv3.apps.googleusercontent.com"
+
+[env.preview.vars]
 FOUNDRY_CLIENT_ID = "a389012581ce16da4bc34d1445fb6d90"
 FOUNDRY_URL = "https://bobbyfidz.usw-16.palantirfoundry.com/"
 FOUNDRY_ONTOLOGY_RID= "ri.ontology.main.ontology.e0f20a9f-fb10-4b1f-a8e8-a6a409c78309"
