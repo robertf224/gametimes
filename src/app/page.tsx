@@ -13,6 +13,7 @@ export default async function HomePage() {
     .where({ alias: "FBS" })
     .pivotTo("collegeFootballConferences")
     .pivotTo("collegeFootballTeams");
+  // TODO: rename these link types
   const fbsGamesObjectSet = fbsTeamsObjectSet
     .pivotTo("collegeFootballGames")
     .union(fbsTeamsObjectSet.pivotTo("collegeFootballGames_1"));
