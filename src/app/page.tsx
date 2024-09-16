@@ -6,6 +6,8 @@ import { auth } from "@/logic/auth";
 import Link from "next/link";
 import { TeamLogo } from "@/components/team-logo";
 
+export const runtime = "edge";
+
 export default async function HomePage() {
   const session = await auth();
   const userId = session?.user?.id;
