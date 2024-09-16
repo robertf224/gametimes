@@ -7,7 +7,7 @@ import { GametimesLogo } from "@/components/gametimes-logo";
 import { SearchBar } from "@/components/search-bar";
 import { ProfileButton } from "@/components/profile-button";
 
-export const font = Roboto_Mono({
+const font = Roboto_Mono({
   subsets: ["latin"],
   display: "swap",
 });
@@ -16,6 +16,8 @@ export const metadata: Metadata = {
   title: "Gametimes",
   // TODO: come up with description
 };
+
+export const runtime = "edge";
 
 export default function RootLayout({
   children,

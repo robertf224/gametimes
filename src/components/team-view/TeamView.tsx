@@ -5,7 +5,6 @@ import {
   CollegeFootballTeam,
   GametimesFavorite,
 } from "@gametimes/sdk";
-import Image from "next/image";
 import { Table } from "../table";
 import { Osdk } from "@osdk/client";
 import { FavoriteButton } from "../favorite-button";
