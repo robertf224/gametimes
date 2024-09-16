@@ -14,7 +14,7 @@ const font = Roboto_Mono({
 
 export const metadata: Metadata = {
   title: "Gametimes",
-  // TODO: come up with description
+  description: "What the ESPN website should be.",
 };
 
 export const runtime = "edge";
