@@ -7,7 +7,7 @@ export default async function ProfilePage() {
     redirect("/");
   }
   return (
-    <div className="flex py-5 px-10">
+    <div className="flex py-5 px-5 sm:px-10">
       {session.user?.name && <h1>Hello, {session.user.name}</h1>}
     </div>
   );

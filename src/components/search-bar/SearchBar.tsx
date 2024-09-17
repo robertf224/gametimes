@@ -76,7 +76,7 @@ export const SearchBar: React.FC = () => {
         aria-label="Search"
         autoComplete="off"
         placeholder="Search (meta + k)"
-        className="bg-background focus:outline-none px-5 py-2 border-foreground rounded-full border"
+        className="bg-background focus:outline-none px-5 py-2 border-foreground rounded-full border w-full sm:w-fit"
         onChange={(event) => setQuery(event.target.value)}
       />
       <ComboboxOptions
@@ -86,7 +86,7 @@ export const SearchBar: React.FC = () => {
         }}
         transition
         className={clsx(
-          "origin-top transition duration-200 ease-out border w-80 rounded-lg bg-background border-foreground data-[closed]:scale-95 data-[closed]:opacity-0"
+          "origin-top transition duration-200 ease-out border sm:w-80 h-full sm:h-fit w-full rounded-lg bg-background border-foreground data-[closed]:scale-95 data-[closed]:opacity-0"
         )}
       >
         {results}
