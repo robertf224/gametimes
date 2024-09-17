@@ -11,7 +11,7 @@ import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import search from "./search";
 import { Osdk } from "@osdk/client";
 import { CollegeFootballTeam } from "@gametimes/sdk";
-import { useRouter } from "next/navigation";
+import { useRouter } from "nextjs-toploader/app";
 import { useHotkeys } from "react-hotkeys-hook";
 import { TeamLogo } from "../team-logo";
 import clsx from "clsx";
