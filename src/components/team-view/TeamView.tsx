@@ -18,24 +18,40 @@ export interface TeamViewProps {
 export const TeamView: React.FC<TeamViewProps> = async ({ team }) => {
   const session = await auth();
   const user = session?.user && session.user.id ? session.user : undefined;
-  const [{ name: conferenceName }, { data: games }, favoritedResponse] =
-    await Promise.all([
-      foundryClient(CollegeFootballConference).fetchOne(team.conferenceId!, {
-        $select: ["name"],
+  const gamesObjectSet = foundryClient(CollegeFootballGame).where({
+    season: 2024,
+    $or: [{ homeTeamId: team.id }, { awayTeamId: team.id }],
+  });
+  const [
+    { name: conferenceName },
+    { data: games },
+    { data: teams },
+    favoritedResponse,
+  ] = await Promise.all([
+    foundryClient(CollegeFootballConference).fetchOne(team.conferenceId!, {
+      $select: ["name"],
+    }),
+    foundryClient(CollegeFootballGame)
+      .where({
+        season: 2024,
+        $or: [{ homeTeamId: team.id }, { awayTeamId: team.id }],
+      })
+      .fetchPage({
+        $orderBy: { scheduledTime: "asc" },
+        $pageSize: 100,
       }),
-      foundryClient(CollegeFootballGame)
-        .where({
-          season: 2024,
-          $or: [{ homeTeamId: team.id }, { awayTeamId: team.id }],
-        })
-        .fetchPage({ $orderBy: { scheduledTime: "asc" }, $pageSize: 50 }),
-      user
-        ? foundryClient(GametimesFavorite).fetchOneWithErrors(
-            generateFavoriteId(user.id!, team.id)
-          )
-        : undefined,
-    ]);
+    gamesObjectSet
+      .pivotTo("homeTeam")
+      .union(gamesObjectSet.pivotTo("awayTeam"))
+      .fetchPage({ $pageSize: 100 }),
+    user
+      ? foundryClient(GametimesFavorite).fetchOneWithErrors(
+          generateFavoriteId(user.id!, team.id)
+        )
+      : undefined,
+  ]);
   const favorited = favoritedResponse?.value;
+  const teamsById = Object.fromEntries(teams.map((team) => [team.id, team]));
 
   return (
     <div className="flex flex-col gap-8">
@@ -61,13 +77,44 @@ export const TeamView: React.FC<TeamViewProps> = async ({ team }) => {
         <Table
           columns={[
             {
-              title: "Title",
-              renderCell: (game) => game.title,
+              title: "Matchup",
+              renderCell: (game) => {
+                const isHomeGame = game.homeTeamId === team.id;
+                const opponentId = isHomeGame
+                  ? game.awayTeamId!
+                  : game.homeTeamId!;
+                const opponent = teamsById[opponentId]!;
+                return (
+                  <div className="flex items-center gap-1">
+                    <span className="w-5 text-center">
+                      {isHomeGame ? "vs" : "@"}
+                    </span>
+                    <TeamLogo size={30} team={opponent} />
+                    <span className="hidden sm:block">{opponent.college}</span>
+                  </div>
+                );
+              },
             },
             {
               title: "Date",
-              renderCell: (game) =>
-                new Date(game.scheduledTime!).toDateString(),
+              renderCell: (game) => {
+                const scheduled = new Date(game.scheduledTime!);
+                const datePart = scheduled.toLocaleDateString(undefined, {
+                  month: "numeric",
+                  day: "numeric",
+                  weekday: "short",
+                });
+                const timePart = scheduled.toLocaleTimeString(undefined, {
+                  hour: "numeric",
+                  minute: "2-digit",
+                });
+                return (
+                  <div>
+                    <div>{datePart}</div>
+                    <div>{timePart}</div>
+                  </div>
+                );
+              },
             },
             {
               title: "Network",

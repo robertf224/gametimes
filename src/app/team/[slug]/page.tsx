@@ -17,7 +17,7 @@ export default async function TeamPage({
   }
   return (
     <div
-      className="py-5 px-10"
+      className="py-5 px-5 sm:px-10 h-full"
       style={
         team.color
           ? {

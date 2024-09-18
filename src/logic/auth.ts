@@ -8,8 +8,8 @@ import {
   GametimesUser,
   linkGametimesAccount,
 } from "@gametimes/sdk";
-import { foundryClient } from "./foundryClient";
 import { Osdk } from "@osdk/client";
+import { foundryClient } from "./foundryClient";
 
 type GametimesUserData = Pick<
   Osdk<GametimesUser>,

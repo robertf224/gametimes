@@ -20,11 +20,15 @@ export function Table<Row>({
 }: TableProps<Row>): React.ReactNode {
   return (
     <div className="border border-muted rounded-lg backdrop-blur bg-white/50 dark:bg-black/50">
-      <table className="w-full text-sm text-left rtl:text-right">
+      <table className="w-full text-sm text-left rtl:text-right table-fixed sm:table-auto">
         <thead className="text-xs uppercase text-muted">
           <tr>
             {columns.map((column) => (
-              <th key={column.title} scope="col" className="px-6 py-3">
+              <th
+                key={column.title}
+                scope="col"
+                className="p-1 first:pl-2 last:pr-2"
+              >
                 {column.title}
               </th>
             ))}
@@ -41,7 +45,7 @@ export function Table<Row>({
                 )}
               >
                 {columns.map((column) => (
-                  <td key={column.title} className="px-6 py-4">
+                  <td key={column.title} className="p-1 first:pl-2 last:pr-2">
                     {column.renderCell(row)}
                   </td>
                 ))}

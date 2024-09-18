@@ -7,21 +7,22 @@ import {
   ComboboxOption,
   ComboboxOptions,
 } from "@headlessui/react";
-import { useQuery } from "@tanstack/react-query";
+import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import search from "./search";
 import { Osdk } from "@osdk/client";
 import { CollegeFootballTeam } from "@gametimes/sdk";
-import { useRouter } from "next/navigation";
+import { useRouter } from "nextjs-toploader/app";
 import { useHotkeys } from "react-hotkeys-hook";
 import { TeamLogo } from "../team-logo";
 import clsx from "clsx";
 
 export const SearchBar: React.FC = () => {
   const [query, setQuery] = React.useState("");
-  const { data, error } = useQuery({
+  const { data, error, isFetching } = useQuery({
     queryKey: ["search", query],
     queryFn: () => search(query),
     enabled: query !== "",
+    placeholderData: keepPreviousData,
   });
 
   const router = useRouter();
@@ -41,17 +42,26 @@ export const SearchBar: React.FC = () => {
 
   let results: React.ReactNode;
   if (error) {
-    results = <div className="p-5">Something went wrong 😭</div>;
-  } else if (!data) {
-    results = <div className="p-5">Start typing to search</div>;
+    results = "Something went wrong 😭";
+  } else if (!data || query === "") {
+    results = "Start typing to search";
   } else if (data.length === 0) {
-    results = <div className="p-5">No results</div>;
+    results = "No results";
+  }
+
+  if (results) {
+    results = (
+      <div className={clsx("p-5", isFetching && "opacity-50")}>{results}</div>
+    );
   } else {
-    results = data.map((team) => (
+    results = data!.map((team) => (
       <ComboboxOption
         key={team.id}
         value={team}
-        className="data-[focus]:bg-active flex items-center gap-2 p-2"
+        className={clsx(
+          "data-[focus]:bg-active flex items-center gap-2 p-2",
+          isFetching && "opacity-50"
+        )}
       >
         <TeamLogo team={team} size={30} />
         <div className="overflow-ellipsis">
@@ -76,7 +86,7 @@ export const SearchBar: React.FC = () => {
         aria-label="Search"
         autoComplete="off"
         placeholder="Search (meta + k)"
-        className="bg-background focus:outline-none px-5 py-2 border-foreground rounded-full border"
+        className="bg-background focus:outline-none px-5 py-2 border-foreground rounded-full border w-full sm:w-fit"
         onChange={(event) => setQuery(event.target.value)}
       />
       <ComboboxOptions
@@ -85,9 +95,7 @@ export const SearchBar: React.FC = () => {
           gap: 8,
         }}
         transition
-        className={clsx(
-          "origin-top transition duration-200 ease-out border w-80 rounded-lg bg-background border-foreground data-[closed]:scale-95 data-[closed]:opacity-0"
-        )}
+        className="origin-top transition duration-200 ease-out border sm:w-80 h-full sm:h-fit w-full rounded-lg bg-background border-foreground data-[closed]:scale-95 data-[closed]:opacity-0"
       >
         {results}
       </ComboboxOptions>

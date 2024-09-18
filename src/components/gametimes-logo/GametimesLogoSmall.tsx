@@ -1,18 +1,18 @@
 import clsx from "clsx";
-import Logo from "./gametimes-logo.svg";
+import Logo from "./gametimes-logo-small.svg";
 
-const LOGO_WIDTH = 928;
-const LOGO_HEIGHT = 130;
+const LOGO_WIDTH = 38.462;
+const LOGO_HEIGHT = 53.847;
 
-export interface GametimesLogoProps {
+export interface GametimesLogoSmallProps {
   className?: string;
-  /** @default 200 */
+  /** @default 30 */
   width?: number;
 }
 
-export const GametimesLogo: React.FC<GametimesLogoProps> = ({
+export const GametimesLogoSmall: React.FC<GametimesLogoSmallProps> = ({
   className,
-  width = 200,
+  width = 30,
 }) => {
   const height = (LOGO_HEIGHT / LOGO_WIDTH) * width;
   return (

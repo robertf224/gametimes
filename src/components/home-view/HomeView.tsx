@@ -14,31 +14,33 @@ export const HomeView: React.FC = async () => {
     .where({ alias: "FBS" })
     .pivotTo("collegeFootballConferences")
     .pivotTo("collegeFootballTeams");
-  // TODO: rename these link types
   const fbsGamesObjectSet = fbsTeamsObjectSet
-    .pivotTo("collegeFootballGames")
-    .union(fbsTeamsObjectSet.pivotTo("collegeFootballGames_1"));
-  const [{ data: games }, favorites] = await Promise.all([
-    fbsGamesObjectSet
-      .where({
-        $and: [
-          {
-            scheduledTime: {
-              $gt: Temporal.Now.zonedDateTimeISO()
-                .subtract({ days: 2 })
-                .toString({ smallestUnit: "milliseconds" }),
-            },
-          },
-          {
-            scheduledTime: {
-              $lt: Temporal.Now.zonedDateTimeISO()
-                .add({ days: 7 })
-                .toString({ smallestUnit: "milliseconds" }),
-            },
-          },
-        ],
-      })
-      .fetchPage({ $orderBy: { scheduledTime: "asc" } }),
+    .pivotTo("homeGames")
+    .union(fbsTeamsObjectSet.pivotTo("awayGames"));
+  const upcomingGamesObjectSet = fbsGamesObjectSet.where({
+    $and: [
+      {
+        scheduledTime: {
+          $gt: Temporal.Now.zonedDateTimeISO()
+            .subtract({ days: 2 })
+            .toString({ smallestUnit: "milliseconds" }),
+        },
+      },
+      {
+        scheduledTime: {
+          $lt: Temporal.Now.zonedDateTimeISO()
+            .add({ days: 7 })
+            .toString({ smallestUnit: "milliseconds" }),
+        },
+      },
+    ],
+  });
+  const [{ data: games }, { data: teams }, favorites] = await Promise.all([
+    upcomingGamesObjectSet.fetchPage({ $orderBy: { scheduledTime: "asc" } }),
+    upcomingGamesObjectSet
+      .pivotTo("homeTeam")
+      .union(upcomingGamesObjectSet.pivotTo("awayTeam"))
+      .fetchPage(),
     userId
       ? foundryClient(GametimesFavorite)
           .where({ userId })
@@ -47,15 +49,21 @@ export const HomeView: React.FC = async () => {
           .then((data) => data.data)
       : [],
   ]);
+  const teamsById = Object.fromEntries(teams.map((team) => [team.id, team]));
+
   return (
-    <div className="py-5 px-10 flex flex-col gap-10">
+    <div className="py-5 px-5 sm:px-10 flex flex-col gap-10">
       {favorites.length > 0 && (
         <div className="flex flex-col gap-5">
           <h2>My favorites</h2>
           <div className="flex flex-wrap gap-5">
             {favorites.map((favorite) => {
               return (
-                <Link key={favorite.id} href={`/team/${favorite.slug}`}>
+                <Link
+                  key={favorite.id}
+                  href={`/team/${favorite.slug}`}
+                  className="w-full sm:w-fit"
+                >
                   <div className="flex px-5 py-2 items-center gap-2 border-foreground border rounded hover:bg-hover">
                     <TeamLogo team={favorite} size={50} />
                     <div>
@@ -73,13 +81,49 @@ export const HomeView: React.FC = async () => {
         <Table
           columns={[
             {
-              title: "Title",
-              renderCell: (game) => game.title,
+              title: "Matchup",
+              renderCell: (game) => {
+                const homeTeam = teamsById[game.homeTeamId!]!;
+                const awayTeam = teamsById[game.awayTeamId!]!;
+                return (
+                  <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-1">
+                      <TeamLogo size={30} team={awayTeam} />
+                      <span className="hidden sm:block">
+                        {awayTeam.college}
+                      </span>
+                    </div>
+                    <span>@</span>
+                    <div className="flex items-center gap-1">
+                      <TeamLogo size={30} team={homeTeam} />
+                      <span className="hidden sm:block">
+                        {homeTeam.college}
+                      </span>
+                    </div>
+                  </div>
+                );
+              },
             },
             {
               title: "Date",
-              renderCell: (game) =>
-                new Date(game.scheduledTime!).toDateString(),
+              renderCell: (game) => {
+                const scheduled = new Date(game.scheduledTime!);
+                const datePart = scheduled.toLocaleDateString(undefined, {
+                  month: "numeric",
+                  day: "numeric",
+                  weekday: "short",
+                });
+                const timePart = scheduled.toLocaleTimeString(undefined, {
+                  hour: "numeric",
+                  minute: "2-digit",
+                });
+                return (
+                  <div className="flex flex-col">
+                    <div>{datePart}</div>
+                    <div>{timePart}</div>
+                  </div>
+                );
+              },
             },
             {
               title: "Network",
