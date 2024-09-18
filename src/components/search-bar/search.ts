@@ -7,11 +7,7 @@ import { Osdk } from "@osdk/client";
 export default async function search(
   query: string
 ): Promise<Array<Osdk<CollegeFootballTeam>>> {
-  const fbsTeamsObjectSet = foundryClient(CollegeFootballDivision)
-    .where({ alias: "FBS" })
-    .pivotTo("collegeFootballConferences")
-    .pivotTo("collegeFootballTeams");
-  const results = await fbsTeamsObjectSet
+  const results = await foundryClient(CollegeFootballTeam)
     .where({
       $or: [
         {
