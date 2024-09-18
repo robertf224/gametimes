@@ -1,7 +1,7 @@
 "use server";
 
 import { foundryClient } from "@/logic/foundryClient";
-import { CollegeFootballDivision, CollegeFootballTeam } from "@gametimes/sdk";
+import { CollegeFootballTeam } from "@gametimes/sdk";
 import { Osdk } from "@osdk/client";
 
 export default async function search(
