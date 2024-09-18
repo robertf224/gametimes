@@ -24,7 +24,7 @@ export const createFoundryClient = (): Client => {
     process.env.FOUNDRY_URL,
     undefined,
     // TODO: maybe push this upstream into OSDK, we need to do this so auth doesn't break
-    (url, options) => fetch(url, { ...options, cache: "no-store" })
+    (url, options) => fetch(url, { ...options, cache: undefined })
   );
 
   return createClient(
