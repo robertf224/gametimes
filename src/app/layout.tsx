@@ -32,11 +32,11 @@ export default function RootLayout({
           <NextTopLoader showSpinner={false} />
           <div className="w-full h-full flex flex-col">
             <div className="flex flex-none py-5 sm:px-10 px-5 border-b items-center gap-5">
-              <div className="flex-1 flex items-center gap-5">
-                <Link href="/">
-                  <GametimesLogo className="hidden sm:block" />
-                  <GametimesLogoSmall className="sm:hidden" />
-                </Link>
+              <Link href="/">
+                <GametimesLogo className="hidden sm:block" />
+                <GametimesLogoSmall className="sm:hidden" />
+              </Link>
+              <div className="flex-1">
                 <SearchBar />
               </div>
               <div className="flex-none">

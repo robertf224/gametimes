@@ -79,7 +79,7 @@ export const ProfileButton: React.FC = async () => {
 
   return (
     <Menu>
-      <MenuButton>{icon}</MenuButton>
+      <MenuButton className="flex">{icon}</MenuButton>
       <MenuItems
         anchor={{
           gap: 8,
