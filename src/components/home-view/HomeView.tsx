@@ -87,19 +87,23 @@ export const HomeView: React.FC = async () => {
                 const awayTeam = teamsById[game.awayTeamId!]!;
                 return (
                   <div className="flex items-center gap-2">
-                    <div className="flex items-center gap-1">
-                      <TeamLogo size={30} team={awayTeam} />
-                      <span className="hidden sm:block">
-                        {awayTeam.college}
-                      </span>
-                    </div>
+                    <Link href={`/team/${awayTeam.slug}`}>
+                      <div className="flex items-center gap-1">
+                        <TeamLogo size={30} team={awayTeam} />
+                        <span className="hidden sm:block">
+                          {awayTeam.college}
+                        </span>
+                      </div>
+                    </Link>
                     <span>@</span>
-                    <div className="flex items-center gap-1">
-                      <TeamLogo size={30} team={homeTeam} />
-                      <span className="hidden sm:block">
-                        {homeTeam.college}
-                      </span>
-                    </div>
+                    <Link href={`/team/${homeTeam.slug}`}>
+                      <div className="flex items-center gap-1">
+                        <TeamLogo size={30} team={homeTeam} />
+                        <span className="hidden sm:block">
+                          {homeTeam.college}
+                        </span>
+                      </div>
+                    </Link>
                   </div>
                 );
               },

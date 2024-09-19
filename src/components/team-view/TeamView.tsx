@@ -11,6 +11,7 @@ import { FavoriteButton } from "../favorite-button";
 import { auth } from "@/logic/auth";
 import { generateFavoriteId } from "@/logic/generateFavoriteId";
 import { TeamLogo } from "../team-logo";
+import Link from "next/link";
 export interface TeamViewProps {
   team: Osdk<CollegeFootballTeam>;
 }
@@ -89,8 +90,14 @@ export const TeamView: React.FC<TeamViewProps> = async ({ team }) => {
                     <span className="w-5 text-center">
                       {isHomeGame ? "vs" : "@"}
                     </span>
-                    <TeamLogo size={30} team={opponent} />
-                    <span className="hidden sm:block">{opponent.college}</span>
+                    <Link href={`/team/${opponent.slug}`}>
+                      <div className="flex items-center gap-1">
+                        <TeamLogo size={30} team={opponent} />
+                        <span className="hidden sm:block">
+                          {opponent.college}
+                        </span>
+                      </div>
+                    </Link>
                   </div>
                 );
               },
