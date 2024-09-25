@@ -1,3 +1,3 @@
 # Gametimes
 
-What the ESPN website should be.
+Sports schedules.
