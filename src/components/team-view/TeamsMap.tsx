@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import { CollegeFootballStadium, CollegeFootballTeam } from "@gametimes/sdk";
@@ -15,7 +16,7 @@ export const TeamsMap: React.FC<TeamsMapProps> = ({ teams }) => {
     return (
         <ComposableMap projection="geoAlbersUsa">
             <Geographies geography="https://cdn.jsdelivr.net/npm/us-atlas@3/states-10m.json">
-                {({ outline, borders }) => (
+                {({ outline, borders }: any) => (
                     <>
                         <Geography geography={outline} fill="#E9E3DA" />
                         <Geography geography={borders} fill="none" stroke="#FFF" />
