@@ -9,44 +9,44 @@ import { ProfileButton } from "@/components/profile-button";
 import NextTopLoader from "nextjs-toploader";
 
 const font = Roboto_Mono({
-  subsets: ["latin"],
-  display: "swap",
+    subsets: ["latin"],
+    display: "swap",
 });
 
 export const metadata: Metadata = {
-  title: "Gametimes",
-  description: "What the ESPN website should be.",
+    title: "Gametimes",
+    description: "Sports schedules.",
 };
 
 export const runtime = "edge";
 
 export default function RootLayout({
-  children,
+    children,
 }: Readonly<{
-  children: React.ReactNode;
+    children: React.ReactNode;
 }>) {
-  return (
-    <ClientEnvironmentProvider>
-      <html className="w-full h-full" lang="en">
-        <body className={`${font.className} antialiased w-full h-full`}>
-          <NextTopLoader showSpinner={false} />
-          <div className="w-full h-full flex flex-col">
-            <div className="flex flex-none py-5 sm:px-10 px-5 border-b items-center gap-5">
-              <Link href="/">
-                <GametimesLogo className="hidden sm:block" />
-                <GametimesLogoSmall className="sm:hidden" />
-              </Link>
-              <div className="flex-1">
-                <SearchBar />
-              </div>
-              <div className="flex-none">
-                <ProfileButton />
-              </div>
-            </div>
-            <main className="flex-1">{children}</main>
-          </div>
-        </body>
-      </html>
-    </ClientEnvironmentProvider>
-  );
+    return (
+        <ClientEnvironmentProvider>
+            <html className="h-full w-full" lang="en">
+                <body className={`${font.className} h-full w-full antialiased`}>
+                    <NextTopLoader showSpinner={false} />
+                    <div className="flex h-full w-full flex-col">
+                        <div className="flex flex-none items-center gap-5 border-b px-5 py-5 sm:px-10">
+                            <Link href="/">
+                                <GametimesLogo className="hidden sm:block" />
+                                <GametimesLogoSmall className="sm:hidden" />
+                            </Link>
+                            <div className="flex-1">
+                                <SearchBar />
+                            </div>
+                            <div className="flex-none">
+                                <ProfileButton />
+                            </div>
+                        </div>
+                        <main className="flex-1">{children}</main>
+                    </div>
+                </body>
+            </html>
+        </ClientEnvironmentProvider>
+    );
 }
