@@ -12,6 +12,7 @@ import { auth } from "@/logic/auth";
 import { generateFavoriteId } from "@/logic/generateFavoriteId";
 import { TeamLogo } from "../team-logo";
 import Link from "next/link";
+import { TeamsMap } from "./TeamsMap";
 export interface TeamViewProps {
     team: Osdk<CollegeFootballTeam>;
 }
@@ -23,31 +24,42 @@ export const TeamView: React.FC<TeamViewProps> = async ({ team }) => {
         season: 2024,
         $or: [{ homeTeamId: team.id }, { awayTeamId: team.id }],
     });
-    const [{ name: conferenceName }, { data: games }, { data: teams }, favoritedResponse] = await Promise.all(
-        [
-            foundryClient(CollegeFootballConference).fetchOne(team.conferenceId!, {
-                $select: ["name"],
+    const [
+        { name: conferenceName },
+        { data: games },
+        { data: teams },
+        { data: stadiums },
+        favoritedResponse,
+    ] = await Promise.all([
+        foundryClient(CollegeFootballConference).fetchOne(team.conferenceId!, {
+            $select: ["name"],
+        }),
+        foundryClient(CollegeFootballGame)
+            .where({
+                season: 2024,
+                $or: [{ homeTeamId: team.id }, { awayTeamId: team.id }],
+            })
+            .fetchPage({
+                $orderBy: { scheduledTime: "asc" },
+                $pageSize: 100,
             }),
-            foundryClient(CollegeFootballGame)
-                .where({
-                    season: 2024,
-                    $or: [{ homeTeamId: team.id }, { awayTeamId: team.id }],
-                })
-                .fetchPage({
-                    $orderBy: { scheduledTime: "asc" },
-                    $pageSize: 100,
-                }),
-            gamesObjectSet
-                .pivotTo("homeTeam")
-                .union(gamesObjectSet.pivotTo("awayTeam"))
-                .fetchPage({ $pageSize: 100 }),
-            user
-                ? foundryClient(GametimesFavorite).fetchOneWithErrors(generateFavoriteId(user.id!, team.id))
-                : undefined,
-        ]
-    );
+        gamesObjectSet
+            .pivotTo("homeTeam")
+            .union(gamesObjectSet.pivotTo("awayTeam"))
+            .fetchPage({ $pageSize: 100 }),
+        gamesObjectSet
+            .pivotTo("homeTeam")
+            .union(gamesObjectSet.pivotTo("awayTeam"))
+            .pivotTo("collegeFootballStadium")
+            .fetchPage({ $pageSize: 100 }),
+        user
+            ? foundryClient(GametimesFavorite).fetchOneWithErrors(generateFavoriteId(user.id!, team.id))
+            : undefined,
+    ]);
     const favorited = favoritedResponse?.value;
     const teamsById = Object.fromEntries(teams.map((team) => [team.id, team]));
+    const stadiumsById = Object.fromEntries(stadiums.map((stadium) => [stadium.id, stadium]));
+    const teamsWithStadiums = teams.map((team) => ({ team, stadium: stadiumsById[team.stadiumId!] }));
 
     return (
         <div className="flex flex-col gap-8">
@@ -63,6 +75,7 @@ export const TeamView: React.FC<TeamViewProps> = async ({ team }) => {
                     <h6 className="text-muted">{conferenceName}</h6>
                 </div>
             </div>
+            <TeamsMap teams={JSON.parse(JSON.stringify(teamsWithStadiums))} />
             <div className="flex flex-1 flex-col gap-2">
                 <h2 className="text-lg">Schedule</h2>
                 <Table
