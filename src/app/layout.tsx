@@ -7,6 +7,7 @@ import { GametimesLogo, GametimesLogoSmall } from "@/components/gametimes-logo";
 import { SearchBar } from "@/components/search-bar";
 import { ProfileButton } from "@/components/profile-button";
 import NextTopLoader from "nextjs-toploader";
+import GametimesIcon from "./gametimes.ico";
 
 const font = Roboto_Mono({
     subsets: ["latin"],
@@ -16,6 +17,9 @@ const font = Roboto_Mono({
 export const metadata: Metadata = {
     title: "Gametimes",
     description: "Sports schedules.",
+    icons: {
+        icon: GametimesIcon.src,
+    },
 };
 
 export const runtime = "edge";
