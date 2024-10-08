@@ -9,10 +9,10 @@
         "start": "next start"
     },
     "dependencies": {
-        "@gametimes/sdk": "^0.15.0",
+        "@gametimes/sdk": "^0.17.0",
         "@headlessui/react": "^2.1.8",
         "@js-temporal/polyfill": "^0.4.4",
-        "@osdk/client": "^0.21.1",
+        "@osdk/client": "^2.0.1",
         "@osdk/oauth": "^0.3.0",
         "@tanstack/react-query": "^5.56.2",
         "clsx": "^2.1.1",
