@@ -9,7 +9,7 @@
         "start": "next start"
     },
     "dependencies": {
-        "@gametimes/sdk": "^0.18.0",
+        "@gametimes/sdk": "^0.19.0",
         "@headlessui/react": "^2.1.8",
         "@js-temporal/polyfill": "^0.4.4",
         "@osdk/client": "^2.0.1",
