@@ -76,7 +76,7 @@ export const TeamView: React.FC<TeamViewProps> = async ({ team }) => {
                                 return (
                                     <div className="flex items-center gap-1">
                                         <span className="w-5 text-center">{isHomeGame ? "vs" : "@"}</span>
-                                        <Link href={`/team/${opponent.slug}`}>
+                                        <Link href={`/game/${game.id}`}>
                                             <div className="flex items-center gap-1">
                                                 <TeamLogo size={30} team={opponent} />
                                                 <span className="hidden sm:block">{opponent.college}</span>
